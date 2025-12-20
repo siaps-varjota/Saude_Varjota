@@ -1,0 +1,14 @@
+Agente do usuário:  Googlebot
+Permitir:  /
+
+Agente do usuário:  Bingbot
+Permitir:  /
+
+Agente do usuário:  Twitterbot
+Permitir:  /
+
+Agente do usuário:  facebookexternalhit
+Permitir:  /
+
+Agente do usuário:  *
+Permitir:  /
