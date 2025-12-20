@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Indicadores de Saúde - Varjota</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%); min-height: 100vh; color: #e2e8f0; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+    header { text-align: center; padding: 30px 0; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
+    header h1 { font-size: 2rem; background: linear-gradient(135deg, #22d3ee, #60a5fa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    header p { color: #94a3b8; margin-top: 8px; }
+    
+    .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; justify-content: center; }
+    .tab-btn { padding: 10px 16px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #94a3b8; border-radius: 8px; cursor: pointer; transition: all 0.3s; font-size: 14px; }
+    .tab-btn:hover { background: rgba(255,255,255,0.1); color: #e2e8f0; }
+    .tab-btn.active { background: linear-gradient(135deg, #22d3ee, #3b82f6); color: white; border-color: transparent; }
+    
+    .filters { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; padding: 16px; background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
+    .filter-group { flex: 1; min-width: 150px; }
+    .filter-group label { display: block; font-size: 12px; color: #94a3b8; margin-bottom: 4px; }
+    .filter-group select { width: 100%; padding: 8px 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #e2e8f0; border-radius: 6px; font-size: 14px; }
+    .filter-group select:focus { outline: none; border-color: #22d3ee; }
+    .btn-pdf { padding: 8px 16px; background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; transition: opacity 0.3s; }
+    .btn-pdf:hover { opacity: 0.9; }
+    
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .card { padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); transition: transform 0.3s; }
+    .card:hover { transform: translateY(-2px); }
+    .card.success { background: linear-gradient(135deg, rgba(34,197,94,0.1), rgba(34,197,94,0.05)); border-color: rgba(34,197,94,0.3); }
+    .card.warning { background: linear-gradient(135deg, rgba(234,179,8,0.1), rgba(234,179,8,0.05)); border-color: rgba(234,179,8,0.3); }
+    .card.danger { background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(239,68,68,0.05)); border-color: rgba(239,68,68,0.3); }
+    .card.info { background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(59,130,246,0.05)); border-color: rgba(59,130,246,0.3); }
+    .card.primary { background: linear-gradient(135deg, rgba(34,211,238,0.1), rgba(34,211,238,0.05)); border-color: rgba(34,211,238,0.3); }
+    .card-title { font-size: 13px; color: #94a3b8; margin-bottom: 8px; line-height: 1.3; }
+    .card-value { font-size: 28px; font-weight: 700; }
+    .card-total { font-size: 14px; color: #64748b; }
+    .card.success .card-value { color: #22c55e; }
+    .card.warning .card-value { color: #eab308; }
+    .card.danger .card-value { color: #ef4444; }
+    .card.info .card-value { color: #3b82f6; }
+    .card.primary .card-value { color: #22d3ee; }
+    .progress-bar { height: 6px; background: rgba(0,0,0,0.3); border-radius: 3px; margin-top: 12px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 3px; transition: width 0.5s; }
+    .card.success .progress-fill { background: #22c55e; }
+    .card.warning .progress-fill { background: #eab308; }
+    .card.danger .progress-fill { background: #ef4444; }
+    .card.info .progress-fill { background: #3b82f6; }
+    .card.primary .progress-fill { background: #22d3ee; }
+    
+    .table-container { background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); overflow: hidden; }
+    .table-header { padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .table-header h2 { font-size: 18px; margin-bottom: 4px; }
+    .table-header p { font-size: 13px; color: #64748b; }
+    table { width: 100%; border-collapse: collapse; }
+    th { padding: 12px; font-size: 12px; text-align: center; background: rgba(255,255,255,0.05); color: #94a3b8; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; user-select: none; white-space: nowrap; }
+    th:hover { background: rgba(255,255,255,0.08); }
+    th:first-child { cursor: default; }
+    th:first-child:hover { background: rgba(255,255,255,0.05); }
+    td { padding: 12px; font-size: 13px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    tr:hover { background: rgba(255,255,255,0.02); }
+    .status-sim { background: rgba(34,197,94,0.2); color: #22c55e; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+    .status-nao { background: rgba(234,179,8,0.2); color: #eab308; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+    .status-priority { background: rgba(239,68,68,0.2); color: #ef4444; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+    
+    .pagination { display: flex; justify-content: center; align-items: center; gap: 16px; padding: 16px; border-top: 1px solid rgba(255,255,255,0.1); }
+    .pagination button { padding: 8px 16px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #e2e8f0; border-radius: 6px; cursor: pointer; font-size: 14px; transition: all 0.3s; }
+    .pagination button:hover:not(:disabled) { background: rgba(255,255,255,0.1); }
+    .pagination button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .pagination span { color: #94a3b8; font-size: 14px; }
+    
+    .loading { text-align: center; padding: 60px; color: #64748b; }
+    .spinner { width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.1); border-top-color: #22d3ee; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    @media (max-width: 768px) {
+      .tabs { gap: 6px; }
+      .tab-btn { padding: 8px 12px; font-size: 12px; }
+      .cards-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+      .filters { flex-direction: column; }
+      .filter-group { min-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Indicadores de Saúde de Varjota</h1>
+      <p>Monitoramento de Indicadores da Atenção Básica</p>
+    </header>
+    
+    <div class="tabs" id="tabs"></div>
+    
+    <div class="filters" id="filters">
+      <div class="filter-group">
+        <label>Equipe</label>
+        <select id="filter-equipe"><option value="">Todas</option></select>
+      </div>
+      <div class="filter-group">
+        <label>Microárea</label>
+        <select id="filter-microarea"><option value="">Todas</option></select>
+      </div>
+      <div class="filter-group">
+        <label>Status Boas Práticas</label>
+        <select id="filter-boas-praticas"><option value="">Todos</option></select>
+      </div>
+      <div class="filter-group">
+        <label>Status Vacinas</label>
+        <select id="filter-vacinas"><option value="">Todos</option></select>
+      </div>
+      <div class="filter-group">
+        <label>Prioridade</label>
+        <select id="filter-prioridade"><option value="">Todas</option></select>
+      </div>
+      <div class="filter-group" style="display:flex;align-items:flex-end;">
+        <button class="btn-pdf" onclick="generatePDF()">Gerar PDF</button>
+      </div>
+    </div>
+    
+    <div class="cards-grid" id="cards"></div>
+    
+    <div class="table-container">
+      <div class="table-header">
+        <h2>Dados Detalhados</h2>
+        <p id="table-info">Carregando...</p>
+      </div>
+      <div style="overflow-x:auto;">
+        <table id="data-table">
+          <thead><tr id="table-head"></tr></thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+      <div class="pagination" id="pagination"></div>
+    </div>
+  </div>
+
+  <script>
+    const TABS = [
+      { id: "tab1", label: "Desenv. Infantil", url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRJk3K_1DtxtxvBx5UuRIbsl_OGzNA9AMMx3TbacImInVTl759ziDlxBK0nlwZg1J_iKxjktwvI5FaH/pub?gid=1142482515&single=true&output=csv" },
+      { id: "tab2", label: "Desenv. Infantil (Vacinas)", url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRJk3K_1DtxtxvBx5UuRIbsl_OGzNA9AMMx3TbacImInVTl759ziDlxBK0nlwZg1J_iKxjktwvI5FaH/pub?gid=1899832726&single=true&output=csv" },
+      { id: "tab3", label: "Gestação e Puerpério", url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSA7ZEnYITSAdJO8T0LvvnDewjPeqMT57kDv_oSeuFUUznKI3FQ5pGg2Ic34k4ZShbWtONP-dvJOABQ/pub?gid=1768767677&single=true&output=csv" },
+      { id: "tab4", label: "Hipertensão", url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vT9k_e_-jlJbu3GvtHBhvCfuUbuC7l85MV_jjZRnbsd3lIqmoKF2pLhGl1JnSfziVXze5zkGCXdPb2n/pub?output=csv" },
+      { id: "tab5", label: "Diabetes", url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSbfV1Kc6st6COoy-FxrbfnC_Ac3bxobCVY_-HXj0oyXNnVo7uVld2VVJh7gAhXAPGHXlZGutzjivjP/pub?gid=1534038569&single=true&output=csv" },
+      { id: "tab6", label: "Saúde da Mulher", url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQLX3B-1FNtn9BZVDseNGuRiPtUUtm13TTx_vI-quwscEMMsTVCp-NjL7b9YH4Cr4vgSI6jAH52M8mk/pub?gid=1711913800&single=true&output=csv" },
+      { id: "tab7", label: "Pessoa Idosa", url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsrC8_qNUsaD2Yem4lAii-GtidlqdFcR65dSpjEKxv5u6Xwv2cH11_EkkYzxDFGYAB6d5fbcCN1mMo/pub?gid=1534038569&single=true&output=csv" }
+    ];
+
+    let currentTab = TABS[0];
+    let allData = [];
+    let headers = [];
+    let sortColumn = null;
+    let sortDirection = null;
+    let currentPage = 1;
+    const ITEMS_PER_PAGE = 50;
+
+    function renderTabs() {
+      const tabsEl = document.getElementById("tabs");
+      tabsEl.innerHTML = TABS.map(t => 
+        `<button class="tab-btn ${t.id === currentTab.id ? 'active' : ''}" onclick="switchTab('${t.id}')">${t.label}</button>`
+      ).join("");
+    }
+
+    function switchTab(tabId) {
+      currentTab = TABS.find(t => t.id === tabId);
+      sortColumn = null;
+      sortDirection = null;
+      currentPage = 1;
+      renderTabs();
+      loadData();
+    }
+
+    async function loadData() {
+      document.getElementById("cards").innerHTML = '<div class="loading"><div class="spinner"></div>Carregando dados...</div>';
+      document.getElementById("table-body").innerHTML = '';
+      document.getElementById("table-head").innerHTML = '';
+      document.getElementById("pagination").innerHTML = '';
+      
+      try {
+        const response = await fetch(currentTab.url + "&_t=" + Date.now());
+        const csv = await response.text();
+        parseCSV(csv);
+        applyFilters();
+      } catch (e) {
+        document.getElementById("cards").innerHTML = '<div class="loading">Erro ao carregar dados</div>';
+      }
+    }
+
+    function parseCSV(csv) {
+      const lines = csv.split("\n").filter(l => l.trim());
+      let headerIndex = -1;
+      
+      for (let i = 0; i < Math.min(15, lines.length); i++) {
+        const line = lines[i].toUpperCase();
+        if ((line.includes("EQUIPE") || line.includes("EQUPE")) && line.includes("MICROÁREA")) {
+          headerIndex = i;
+          break;
+        }
+      }
+      
+      if (headerIndex === -1) { allData = []; headers = []; return; }
+      
+      headers = lines[headerIndex].split(",").map(h => h.replace(/"/g, "").trim()).filter(h => h);
+      allData = [];
+      
+      for (let i = headerIndex + 1; i < lines.length; i++) {
+        const values = lines[i].split(",").map(v => v.replace(/"/g, "").trim());
+        if (values.length >= 3 && values[1]) {
+          const record = {};
+          headers.forEach((h, idx) => { record[h] = values[idx] || ""; });
+          if (record["EQUIPE"] || record["EQUPE"]) allData.push(record);
+        }
+      }
+      
+      populateFilters();
+    }
+
+    function populateFilters() {
+      const unique = (key) => [...new Set(allData.map(r => r[key] || r["EQUPE"] || "").filter(Boolean))];
+      
+      const populate = (id, values) => {
+        const el = document.getElementById(id);
+        const current = el.value;
+        el.innerHTML = '<option value="">Todos</option>' + values.map(v => `<option value="${v}">${v}</option>`).join("");
+        el.value = current;
+      };
+      
+      populate("filter-equipe", unique("EQUIPE"));
+      populate("filter-microarea", unique("Microárea"));
+      populate("filter-boas-praticas", unique("STATUS DAS BOAS PRÁTICAS"));
+      populate("filter-vacinas", unique("STATUS DAS VACINAS"));
+      populate("filter-prioridade", unique("PRIORIDADE"));
+    }
+
+    function getFilters() {
+      return {
+        equipe: document.getElementById("filter-equipe").value,
+        microarea: document.getElementById("filter-microarea").value,
+        boasPraticas: document.getElementById("filter-boas-praticas").value,
+        vacinas: document.getElementById("filter-vacinas").value,
+        prioridade: document.getElementById("filter-prioridade").value
+      };
+    }
+
+    function applyFilters() {
+      currentPage = 1;
+      const f = getFilters();
+      const filtered = allData.filter(r => {
+        const equipe = r["EQUIPE"] || r["EQUPE"] || "";
+        if (f.equipe && equipe !== f.equipe) return false;
+        if (f.microarea && r["Microárea"] !== f.microarea) return false;
+        if (f.boasPraticas && r["STATUS DAS BOAS PRÁTICAS"] !== f.boasPraticas) return false;
+        if (f.vacinas && r["STATUS DAS VACINAS"] !== f.vacinas) return false;
+        if (f.prioridade && r["PRIORIDADE"] !== f.prioridade) return false;
+        return true;
+      });
+      
+      renderCards(filtered);
+      renderTable(filtered);
+    }
+
+    function getAge(record) {
+      const ageStr = String(record["IDADE"] || record["Idade"] || "0");
+      return parseInt(ageStr, 10) || 0;
+    }
+
+    function renderCards(data) {
+      const excluded = ["nº", "equipe", "equpe", "microárea", "nome completo", "data de nascimento", "cpf/cns", "idade", "quadrimestre", "pontuação", "pontos", "idade em meses", "ig em semanas"];
+      const cols = headers.filter(h => !excluded.includes(h.toLowerCase()) && !h.startsWith("Nº") && h.length > 2);
+      
+      const types = ["success", "warning", "info", "primary", "danger"];
+      
+      const cards = cols.map((col, idx) => {
+        let count = 0;
+        let total = data.length;
+        const colLower = col.toLowerCase();
+        
+        // Tab 6 (Saúde da Mulher): filtrar por faixas etárias específicas
+        if (currentTab.id === "tab6") {
+          if (colLower.includes("exame de colo") || colLower.includes("colo de útero") || colLower.includes("colo de utero")) {
+            // 25-64 anos
+            const filtered = data.filter(r => {
+              const age = getAge(r);
+              return age >= 25 && age <= 64;
+            });
+            total = filtered.length;
+            filtered.forEach(r => {
+              const val = String(r[col] || "").trim();
+              if (val && val !== "" && val !== "0" && val.toUpperCase() !== "NÃO") count++;
+            });
+          } else if (colLower.includes("mamografia")) {
+            // 50-69 anos
+            const filtered = data.filter(r => {
+              const age = getAge(r);
+              return age >= 50 && age <= 69;
+            });
+            total = filtered.length;
+            filtered.forEach(r => {
+              const val = String(r[col] || "").trim();
+              if (val && val !== "" && val !== "0" && val.toUpperCase() !== "NÃO") count++;
+            });
+          } else if (colLower.includes("saúde reprodutiva") || colLower.includes("saude reprodutiva") || colLower.includes("consulta em saúde reprodutiva")) {
+            // 14-69 anos
+            const filtered = data.filter(r => {
+              const age = getAge(r);
+              return age >= 14 && age <= 69;
+            });
+            total = filtered.length;
+            filtered.forEach(r => {
+              const val = String(r[col] || "").trim();
+              if (val && val !== "" && val !== "0" && val.toUpperCase() !== "NÃO") count++;
+            });
+          } else {
+            data.forEach(r => {
+              const val = (r[col] || "").trim().toUpperCase();
+              if (val === "SIM" || val === "REALIZADAS" || val === "PROVÁVEL" || (val && !["", "0", "NÃO", "N.A.", "FALTANDO", "PRIORIDADE", "ATRASADAS", "NÃO PROVÁVEL"].includes(val))) count++;
+            });
+          }
+        } else {
+          data.forEach(r => {
+            const val = (r[col] || "").trim().toUpperCase();
+            if (colLower.includes("dtpa")) {
+              if (val && /\d{2}\/\d{2}\/\d{4}/.test(val)) count++;
+            } else if (currentTab.id === "tab1" || currentTab.id === "tab3") {
+              if (val === "SIM") count++;
+            } else {
+              if (val === "SIM" || val === "REALIZADAS" || val === "PROVÁVEL" || (val && !["", "0", "NÃO", "N.A.", "FALTANDO", "PRIORIDADE", "ATRASADAS", "NÃO PROVÁVEL"].includes(val))) count++;
+            }
+          });
+        }
+        
+        const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+        const type = types[idx % types.length];
+        
+        return `<div class="card ${type}">
+          <div class="card-title">${col.length > 35 ? col.substring(0, 35) + "..." : col}</div>
+          <div><span class="card-value">${count}</span> <span class="card-total">/ ${total}</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+        </div>`;
+      });
+      
+      document.getElementById("cards").innerHTML = cards.join("");
+    }
+
+    function sortData(data) {
+      if (!sortColumn || !sortDirection) return data;
+      return [...data].sort((a, b) => {
+        const aVal = (a[sortColumn] || "").trim();
+        const bVal = (b[sortColumn] || "").trim();
+        const aNum = parseFloat(aVal);
+        const bNum = parseFloat(bVal);
+        if (!isNaN(aNum) && !isNaN(bNum)) {
+          return sortDirection === "asc" ? aNum - bNum : bNum - aNum;
+        }
+        const cmp = aVal.localeCompare(bVal, "pt-BR", { sensitivity: "base" });
+        return sortDirection === "asc" ? cmp : -cmp;
+      });
+    }
+
+    function handleSort(header) {
+      if (header.toLowerCase().startsWith("nº") || header.toLowerCase() === "n°") return;
+      if (sortColumn === header) {
+        if (sortDirection === "asc") sortDirection = "desc";
+        else if (sortDirection === "desc") { sortColumn = null; sortDirection = null; }
+        else sortDirection = "asc";
+      } else {
+        sortColumn = header;
+        sortDirection = "asc";
+      }
+      applyFilters();
+    }
+
+    let currentFilteredData = [];
+
+    function renderTable(data) {
+      currentFilteredData = data;
+      const displayHeaders = headers.filter(h => !["QUADRIMESTRE", "PONTUAÇÃO", "PONTOS"].includes(h.toUpperCase()));
+      
+      const sortIcon = (h) => {
+        if (h.toLowerCase().startsWith("nº") || h.toLowerCase() === "n°") return "";
+        if (sortColumn === h) return sortDirection === "asc" ? " ▲" : " ▼";
+        return " ⇅";
+      };
+      
+      document.getElementById("table-head").innerHTML = displayHeaders.map((h, i) => {
+        const isFirst = i === 0 && (h.toLowerCase().startsWith("nº") || h.toLowerCase() === "n°");
+        return `<th onclick="handleSort('${h}')">${isFirst ? "Nº" : h}${sortIcon(h)}</th>`;
+      }).join("");
+      
+      const sorted = sortData(data);
+      const totalPages = Math.ceil(sorted.length / ITEMS_PER_PAGE);
+      const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
+      const endIdx = startIdx + ITEMS_PER_PAGE;
+      const pageData = sorted.slice(startIdx, endIdx);
+      
+      document.getElementById("table-body").innerHTML = pageData.map((r, idx) => {
+        return "<tr>" + displayHeaders.map((h, i) => {
+          const isFirst = i === 0 && (h.toLowerCase().startsWith("nº") || h.toLowerCase() === "n°");
+          const val = isFirst ? (startIdx + idx + 1) : (r[h] || "");
+          const upper = String(val).toUpperCase();
+          let cls = "";
+          if (upper === "SIM" || upper === "REALIZADAS" || upper === "PROVÁVEL") cls = "status-sim";
+          else if (upper === "FALTANDO" || upper === "ATRASADAS" || upper === "NÃO PROVÁVEL") cls = "status-nao";
+          else if (upper === "PRIORIDADE") cls = "status-priority";
+          return `<td>${cls ? `<span class="${cls}">${val}</span>` : val}</td>`;
+        }).join("") + "</tr>";
+      }).join("");
+      
+      document.getElementById("table-info").textContent = `Mostrando ${startIdx + 1}-${Math.min(endIdx, sorted.length)} de ${sorted.length} registros`;
+      
+      // Render pagination
+      document.getElementById("pagination").innerHTML = `
+        <button onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>Anterior</button>
+        <span>Página ${currentPage} de ${totalPages || 1}</span>
+        <button onclick="goToPage(${currentPage + 1})" ${currentPage >= totalPages ? 'disabled' : ''}>Próxima</button>
+      `;
+    }
+
+    function goToPage(page) {
+      const totalPages = Math.ceil(currentFilteredData.length / ITEMS_PER_PAGE);
+      if (page < 1 || page > totalPages) return;
+      currentPage = page;
+      renderTable(currentFilteredData);
+    }
+
+    function generatePDF() {
+      const f = getFilters();
+      const filtered = allData.filter(r => {
+        const equipe = r["EQUIPE"] || r["EQUPE"] || "";
+        if (f.equipe && equipe !== f.equipe) return false;
+        if (f.microarea && r["Microárea"] !== f.microarea) return false;
+        if (f.boasPraticas && r["STATUS DAS BOAS PRÁTICAS"] !== f.boasPraticas) return false;
+        if (f.vacinas && r["STATUS DAS VACINAS"] !== f.vacinas) return false;
+        if (f.prioridade && r["PRIORIDADE"] !== f.prioridade) return false;
+        return true;
+      });
+      
+      const sorted = sortData(filtered);
+      const displayHeaders = headers.filter(h => !["QUADRIMESTRE", "PONTUAÇÃO", "PONTOS"].includes(h.toUpperCase()));
+      
+      let content = `INDICADORES DE SAÚDE - VARJOTA\n${currentTab.label}\n${"=".repeat(60)}\n\n`;
+      content += `Data: ${new Date().toLocaleDateString("pt-BR")}\n`;
+      content += `Total de Registros: ${sorted.length}\n\n`;
+      
+      if (Object.values(f).some(v => v)) {
+        content += "FILTROS APLICADOS:\n";
+        if (f.equipe) content += `- Equipe: ${f.equipe}\n`;
+        if (f.microarea) content += `- Microárea: ${f.microarea}\n`;
+        if (f.boasPraticas) content += `- Status Boas Práticas: ${f.boasPraticas}\n`;
+        if (f.vacinas) content += `- Status Vacinas: ${f.vacinas}\n`;
+        if (f.prioridade) content += `- Prioridade: ${f.prioridade}\n`;
+        content += "\n";
+      }
+      
+      if (sortColumn && sortDirection) {
+        content += `ORDENAÇÃO: ${sortColumn} (${sortDirection === "asc" ? "Crescente" : "Decrescente"})\n\n`;
+      }
+      
+      content += "DADOS:\n" + "-".repeat(60) + "\n\n";
+      
+      sorted.forEach((r, idx) => {
+        content += `--- Registro ${idx + 1} ---\n`;
+        displayHeaders.forEach((h, i) => {
+          const isFirst = i === 0 && (h.toLowerCase().startsWith("nº") || h.toLowerCase() === "n°");
+          const val = isFirst ? (idx + 1) : (r[h] || "-");
+          content += `${h}: ${val}\n`;
+        });
+        content += "\n";
+      });
+      
+      const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `indicadores-${currentTab.id}-${new Date().toISOString().split("T")[0]}.txt`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // Event listeners
+    document.querySelectorAll("select").forEach(el => el.addEventListener("change", applyFilters));
+
+    // Init
+    renderTabs();
+    loadData();
+  </script>
+</body>
+</html>
