@@ -428,12 +428,15 @@
     }
 
     function renderCards(data) {
-      const excluded = ["nº", "equipe", "equpe", "microárea", "nome completo", "data de nascimento", "cpf/cns", "idade", "quadrimestre", "pontuação", "pontos", "idade em meses", "ig em semanas"];
+      const excluded = ["nº", "equipe", "equpe", "microárea", "nome completo", "data de nascimento", "cpf/cns", "idade", "quadrimestre", "pontuação", "pontos", "idade em meses", "ig em semanas", "status das boas práticas"];
       const cols = headers.filter(h => !excluded.includes(h.toLowerCase()) && !h.startsWith("Nº") && h.length > 2);
      
       const types = ["success", "warning", "info", "primary", "danger"];
      
-      const cards = cols.map((col, idx) => {
+      const cards = [];
+
+      // 1. Adicionar os cartões existentes
+      cols.forEach((col, idx) => {
         let count = 0;
         let total = data.length;
         const colLower = col.toLowerCase();
@@ -491,13 +494,42 @@
         const pct = total > 0 ? Math.round((count / total) * 100) : 0;
         const type = types[idx % types.length];
        
-        return `<div class="card ${type}">
+        cards.push(`<div class="card ${type}">
           <div class="card-title">${col.length > 35 ? col.substring(0, 35) + "..." : col}</div>
           <div><span class="card-value">${count}</span> <span class="card-total">/ ${total}</span></div>
           <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-        </div>`;
+        </div>`);
       });
      
+      // 2. Adicionar o cartão PONTUAÇÃO (apenas para a tab1), no final
+      if (currentTab.id === "tab1") {
+        const cardNames = ["1ª CONSULTA <=30 DIAS", "VISITAS ACS (2)", "CONSULTAS (9)", "PESO & ALTURA (9)", "VACINAS"];
+        let sumOfResults = 0;
+        let totalRecords = data.length;
+
+        cardNames.forEach(name => {
+          const col = headers.find(h => h.toUpperCase() === name.toUpperCase());
+          if (col) {
+            let count = 0;
+            data.forEach(r => {
+              const val = (r[col] || "").trim().toUpperCase();
+              if (val === "SIM" || val === "REALIZADAS" || val === "PROVÁVEL" || (val && !["", "0", "NÃO", "N.A.", "FALTANDO", "PRIORIDADE", "ATRASADAS", "NÃO PROVÁVEL"].includes(val))) {
+                count++;
+              }
+            });
+            sumOfResults += count;
+          }
+        });
+
+        const pontuacao = totalRecords > 0 ? (sumOfResults * 20) / totalRecords : 0;
+        const pontuacaoCard = `<div class="card primary">
+          <div class="card-title">PONTUAÇÃO</div>
+          <div><span class="card-value">${pontuacao.toFixed(2)}</span> <span class="card-total">/ ${totalRecords}</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${Math.min(100, pontuacao)}%"></div></div>
+        </div>`;
+        cards.push(pontuacaoCard);
+      }
+
       document.getElementById("cards").innerHTML = cards.join("");
     }
 
