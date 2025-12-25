@@ -7,17 +7,15 @@
   <!-- jsPDF e autoTable para gerar PDF real -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { 
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%); 
-      min-height: 100vh; 
-      color: #e2e8f0; 
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+      min-height: 100vh;
+      color: #e2e8f0;
     }
     .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
-
     /* Título principal */
     .title-header {
       background: linear-gradient(90deg, #0ea5e9 0%, #10b981 100%);
@@ -45,88 +43,85 @@
       color: rgba(255,255,255,0.9);
       margin-top: 4px;
     }
-
     /* Abas */
-    .tabs { 
-      display: flex; 
-      flex-wrap: wrap; 
-      gap: 12px; 
-      margin-bottom: 32px; 
-      justify-content: center; 
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 32px;
+      justify-content: center;
       padding: 16px;
       background: rgba(15, 23, 42, 0.8);
       border-radius: 16px;
       backdrop-filter: blur(4px);
     }
-    .tab-btn { 
-      padding: 12px 24px; 
-      background: rgba(30, 41, 59, 0.7); 
-      color: #94a3b8; 
+    .tab-btn {
+      padding: 12px 24px;
+      background: rgba(30, 41, 59, 0.7);
+      color: #94a3b8;
       border: none;
-      border-radius: 12px; 
-      cursor: pointer; 
+      border-radius: 12px;
+      cursor: pointer;
       transition: all 0.3s ease;
       font-size: 15px;
       font-weight: 500;
       min-width: 140px;
       text-align: center;
     }
-    .tab-btn:hover { 
-      background: rgba(51, 65, 85, 0.9); 
-      color: #cbd5e1; 
+    .tab-btn:hover {
+      background: rgba(51, 65, 85, 0.9);
+      color: #cbd5e1;
     }
-    .tab-btn.active { 
-      background: linear-gradient(135deg, #22d3ee, #06b6d4); 
-      color: white; 
+    .tab-btn.active {
+      background: linear-gradient(135deg, #22d3ee, #06b6d4);
+      color: white;
       box-shadow: 0 4px 15px rgba(34, 211, 238, 0.5);
       font-weight: 600;
     }
-
-    .filters { 
-      display: flex; 
-      flex-wrap: wrap; 
-      gap: 12px; 
-      margin-bottom: 24px; 
-      padding: 16px; 
-      background: rgba(255,255,255,0.03); 
-      border-radius: 12px; 
-      border: 1px solid rgba(255,255,255,0.05); 
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding: 16px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.05);
     }
     .filter-group { flex: 1; min-width: 150px; }
     .filter-group label { display: block; font-size: 12px; color: #94a3b8; margin-bottom: 4px; }
-    .filter-group select { 
-      width: 100%; 
-      padding: 8px 12px; 
-      border: 1px solid rgba(255,255,255,0.1); 
-      background: rgba(255,255,255,0.05); 
-      color: #e2e8f0; 
-      border-radius: 6px; 
-      font-size: 14px; 
+    .filter-group select {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      color: #e2e8f0;
+      border-radius: 6px;
+      font-size: 14px;
     }
     .filter-group select:focus { outline: none; border-color: #22d3ee; }
-    .btn-pdf { 
-      padding: 8px 16px; 
-      background: linear-gradient(135deg, #10b981, #059669); 
-      color: white; 
-      border: none; 
-      border-radius: 6px; 
-      cursor: pointer; 
-      font-size: 14px; 
-      transition: opacity 0.3s; 
+    .btn-pdf {
+      padding: 8px 16px;
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: opacity 0.3s;
     }
     .btn-pdf:hover { opacity: 0.9; }
-
-    .cards-grid { 
-      display: grid; 
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
-      gap: 16px; 
-      margin-bottom: 24px; 
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
     }
-    .card { 
-      padding: 16px; 
-      border-radius: 12px; 
-      border: 1px solid rgba(255,255,255,0.1); 
-      transition: transform 0.3s; 
+    .card {
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: transform 0.3s;
     }
     .card:hover { transform: translateY(-2px); }
     .card.success { background: linear-gradient(135deg, rgba(34,197,94,0.1), rgba(34,197,94,0.05)); border-color: rgba(34,197,94,0.3); }
@@ -149,27 +144,26 @@
     .card.danger .progress-fill { background: #ef4444; }
     .card.info .progress-fill { background: #3b82f6; }
     .card.primary .progress-fill { background: #22d3ee; }
-
-    .table-container { 
-      background: rgba(255,255,255,0.03); 
-      border-radius: 12px; 
-      border: 1px solid rgba(255,255,255,0.1); 
-      overflow: hidden; 
+    .table-container {
+      background: rgba(255,255,255,0.03);
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      overflow: hidden;
     }
     .table-header { padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.1); }
     .table-header h2 { font-size: 18px; margin-bottom: 4px; }
     .table-header p { font-size: 13px; color: #64748b; }
     table { width: 100%; border-collapse: collapse; }
-    th { 
-      padding: 12px; 
-      font-size: 12px; 
-      text-align: center; 
-      background: rgba(255,255,255,0.05); 
-      color: #94a3b8; 
-      border-bottom: 1px solid rgba(255,255,255,0.1); 
-      cursor: pointer; 
-      user-select: none; 
-      white-space: nowrap; 
+    th {
+      padding: 12px;
+      font-size: 12px;
+      text-align: center;
+      background: rgba(255,255,255,0.05);
+      color: #94a3b8;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
     }
     th:hover { background: rgba(255,255,255,0.08); }
     th:first-child { cursor: default; }
@@ -179,47 +173,44 @@
     .status-sim { background: rgba(34,197,94,0.2); color: #22c55e; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
     .status-nao { background: rgba(234,179,8,0.2); color: #eab308; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
     .status-priority { background: rgba(239,68,68,0.2); color: #ef4444; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
-
-    .pagination { 
-      display: flex; 
-      justify-content: center; 
-      align-items: center; 
-      gap: 16px; 
-      padding: 16px; 
-      border-top: 1px solid rgba(255,255,255,0.1); 
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      border-top: 1px solid rgba(255,255,255,0.1);
     }
-    .pagination button { 
-      padding: 8px 16px; 
-      border: 1px solid rgba(255,255,255,0.2); 
-      background: rgba(255,255,255,0.05); 
-      color: #e2e8f0; 
-      border-radius: 6px; 
-      cursor: pointer; 
-      font-size: 14px; 
-      transition: all 0.3s; 
+    .pagination button {
+      padding: 8px 16px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.05);
+      color: #e2e8f0;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s;
     }
     .pagination button:hover:not(:disabled) { background: rgba(255,255,255,0.1); }
     .pagination button:disabled { opacity: 0.5; cursor: not-allowed; }
     .pagination span { color: #94a3b8; font-size: 14px; }
-
     .loading { text-align: center; padding: 60px; color: #64748b; }
-    .spinner { 
-      width: 40px; 
-      height: 40px; 
-      border: 3px solid rgba(255,255,255,0.1); 
-      border-top-color: #22d3ee; 
-      border-radius: 50%; 
-      animation: spin 1s linear infinite; 
-      margin: 0 auto 16px; 
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(255,255,255,0.1);
+      border-top-color: #22d3ee;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-
     @media (max-width: 768px) {
-      .title-header { 
-        padding: 20px; 
-        flex-direction: column; 
-        text-align: center; 
-        gap: 12px; 
+      .title-header {
+        padding: 20px;
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
       }
       .title-header svg { width: 40px; height: 40px; }
       .title-text h1 { font-size: 1.8rem; }
@@ -245,40 +236,12 @@
         <p>Painel de monitoramento da atenção básica</p>
       </div>
     </div>
-
     <!-- Abas -->
     <div class="tabs" id="tabs"></div>
-
-    <!-- Filtros -->
-    <div class="filters" id="filters">
-      <div class="filter-group">
-        <label>Equipe</label>
-        <select id="filter-equipe"><option value="">Todas</option></select>
-      </div>
-      <div class="filter-group">
-        <label>Microárea</label>
-        <select id="filter-microarea"><option value="">Todas</option></select>
-      </div>
-      <div class="filter-group">
-        <label>Status Boas Práticas</label>
-        <select id="filter-boas-praticas"><option value="">Todos</option></select>
-      </div>
-      <div class="filter-group">
-        <label>Status Vacinas</label>
-        <select id="filter-vacinas"><option value="">Todos</option></select>
-      </div>
-      <div class="filter-group">
-        <label>Prioridade</label>
-        <select id="filter-prioridade"><option value="">Todas</option></select>
-      </div>
-      <div class="filter-group" style="display:flex;align-items:flex-end;">
-        <button class="btn-pdf" onclick="generatePDF()">Gerar PDF</button>
-      </div>
-    </div>
-
+    <!-- Filtros (montados dinamicamente) -->
+    <div class="filters" id="filters"></div>
     <!-- Cards -->
     <div class="cards-grid" id="cards"></div>
-
     <!-- Tabela -->
     <div class="table-container">
       <div class="table-header">
@@ -294,10 +257,8 @@
       <div class="pagination" id="pagination"></div>
     </div>
   </div>
-
   <script>
     const { jsPDF } = window.jspdf;
-
     const TABS = [
       { id: "tab1", label: "Desenv. Infantil", url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRJk3K_1DtxtxvBx5UuRIbsl_OGzNA9AMMx3TbacImInVTl759ziDlxBK0nlwZg1J_iKxjktwvI5FaH/pub?gid=1142482515&single=true&output=csv" },
       { id: "tab2", label: "Desenv. Infantil (Vacinas)", url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRJk3K_1DtxtxvBx5UuRIbsl_OGzNA9AMMx3TbacImInVTl759ziDlxBK0nlwZg1J_iKxjktwvI5FaH/pub?gid=1899832726&single=true&output=csv" },
@@ -307,7 +268,6 @@
       { id: "tab6", label: "Saúde da Mulher", url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQLX3B-1FNtn9BZVDseNGuRiPtUUtm13TTx_vI-quwscEMMsTVCp-NjL7b9YH4Cr4vgSI6jAH52M8mk/pub?gid=1711913800&single=true&output=csv" },
       { id: "tab7", label: "Pessoa Idosa", url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsrC8_qNUsaD2Yem4lAii-GtidlqdFcR65dSpjEKxv5u6Xwv2cH11_EkkYzxDFGYAB6d5fbcCN1mMo/pub?gid=1534038569&single=true&output=csv" }
     ];
-
     let currentTab = TABS[0];
     let allData = [];
     let headers = [];
@@ -330,7 +290,51 @@
       sortDirection = null;
       currentPage = 1;
       renderTabs();
+      renderFilters();
       loadData();
+    }
+
+    function renderFilters() {
+      let html = `
+        <div class="filter-group">
+          <label>Equipe</label>
+          <select id="filter-equipe"><option value="">Todas</option></select>
+        </div>
+        <div class="filter-group">
+          <label>Microárea</label>
+          <select id="filter-microarea"><option value="">Todas</option></select>
+        </div>
+        <div class="filter-group">
+          <label>Status Boas Práticas</label>
+          <select id="filter-boas-praticas"><option value="">Todos</option></select>
+        </div>`;
+
+      if (currentTab.id === "tab1") {
+        html += `
+        <div class="filter-group">
+          <label>Quadrimestre</label>
+          <select id="filter-quadrimestre"><option value="">Todos</option></select>
+        </div>`;
+      } else {
+        html += `
+        <div class="filter-group">
+          <label>Status Vacinas</label>
+          <select id="filter-vacinas"><option value="">Todos</option></select>
+        </div>`;
+      }
+
+      html += `
+        <div class="filter-group">
+          <label>Prioridade</label>
+          <select id="filter-prioridade"><option value="">Todas</option></select>
+        </div>
+        <div class="filter-group" style="display:flex;align-items:flex-end;">
+          <button class="btn-pdf" onclick="generatePDF()">Gerar PDF</button>
+        </div>`;
+
+      document.getElementById("filters").innerHTML = html;
+
+      document.querySelectorAll("select").forEach(el => el.addEventListener("change", applyFilters));
     }
 
     async function loadData() {
@@ -338,12 +342,11 @@
       document.getElementById("table-body").innerHTML = '';
       document.getElementById("table-head").innerHTML = '';
       document.getElementById("pagination").innerHTML = '';
-     
+
       try {
         const response = await fetch(currentTab.url + "&_t=" + Date.now());
         const csv = await response.text();
         parseCSV(csv);
-        applyFilters();
       } catch (e) {
         document.getElementById("cards").innerHTML = '<div class="loading">Erro ao carregar dados</div>';
       }
@@ -352,7 +355,7 @@
     function parseCSV(csv) {
       const lines = csv.split("\n").filter(l => l.trim());
       let headerIndex = -1;
-     
+
       for (let i = 0; i < Math.min(15, lines.length); i++) {
         const line = lines[i].toUpperCase();
         if ((line.includes("EQUIPE") || line.includes("EQUPE")) && line.includes("MICROÁREA")) {
@@ -360,12 +363,12 @@
           break;
         }
       }
-     
+
       if (headerIndex === -1) { allData = []; headers = []; return; }
-     
+
       headers = lines[headerIndex].split(",").map(h => h.replace(/"/g, "").trim()).filter(h => h);
       allData = [];
-     
+
       for (let i = headerIndex + 1; i < lines.length; i++) {
         const values = lines[i].split(",").map(v => v.replace(/"/g, "").trim());
         if (values.length >= 3 && values[1]) {
@@ -374,35 +377,55 @@
           if (record["EQUIPE"] || record["EQUPE"]) allData.push(record);
         }
       }
-     
+
       populateFilters();
+      renderFilters();
+      applyFilters();
+    }
+
+    // Função auxiliar para obter o valor do quadrimestre (coluna "N" ou "QUADRIMESTRE")
+    function getQuadrimestre(record) {
+      return record["N"] || record["QUADRIMESTRE"] || "";
     }
 
     function populateFilters() {
       const unique = (key) => [...new Set(allData.map(r => r[key] || r["EQUPE"] || "").filter(Boolean))];
-     
+
       const populate = (id, values) => {
         const el = document.getElementById(id);
+        if (!el) return;
         const current = el.value;
         el.innerHTML = '<option value="">Todos</option>' + values.map(v => `<option value="${v}">${v}</option>`).join("");
-        el.value = current;
+        el.value = current || "";
       };
-     
+
       populate("filter-equipe", unique("EQUIPE"));
       populate("filter-microarea", unique("Microárea"));
       populate("filter-boas-praticas", unique("STATUS DAS BOAS PRÁTICAS"));
       populate("filter-vacinas", unique("STATUS DAS VACINAS"));
       populate("filter-prioridade", unique("PRIORIDADE"));
+
+      if (currentTab.id === "tab1") {
+        const quadValues = [...new Set(allData.map(r => getQuadrimestre(r)).filter(Boolean))];
+        populate("filter-quadrimestre", quadValues);
+      }
     }
 
     function getFilters() {
-      return {
-        equipe: document.getElementById("filter-equipe").value,
-        microarea: document.getElementById("filter-microarea").value,
-        boasPraticas: document.getElementById("filter-boas-praticas").value,
-        vacinas: document.getElementById("filter-vacinas").value,
-        prioridade: document.getElementById("filter-prioridade").value
+      const f = {
+        equipe: document.getElementById("filter-equipe")?.value || "",
+        microarea: document.getElementById("filter-microarea")?.value || "",
+        boasPraticas: document.getElementById("filter-boas-praticas")?.value || "",
+        prioridade: document.getElementById("filter-prioridade")?.value || ""
       };
+
+      if (currentTab.id === "tab1") {
+        f.quadrimestre = document.getElementById("filter-quadrimestre")?.value || "";
+      } else {
+        f.vacinas = document.getElementById("filter-vacinas")?.value || "";
+      }
+
+      return f;
     }
 
     function applyFilters() {
@@ -413,11 +436,12 @@
         if (f.equipe && equipe !== f.equipe) return false;
         if (f.microarea && r["Microárea"] !== f.microarea) return false;
         if (f.boasPraticas && r["STATUS DAS BOAS PRÁTICAS"] !== f.boasPraticas) return false;
-        if (f.vacinas && r["STATUS DAS VACINAS"] !== f.vacinas) return false;
+        if (currentTab.id !== "tab1" && f.vacinas && r["STATUS DAS VACINAS"] !== f.vacinas) return false;
         if (f.prioridade && r["PRIORIDADE"] !== f.prioridade) return false;
+        if (currentTab.id === "tab1" && f.quadrimestre && getQuadrimestre(r) !== f.quadrimestre) return false;
         return true;
       });
-     
+
       renderCards(filtered);
       renderTable(filtered);
     }
@@ -428,45 +452,34 @@
     }
 
     function renderCards(data) {
-      const excluded = ["nº", "equipe", "equpe", "microárea", "nome completo", "data de nascimento", "cpf/cns", "idade", "quadrimestre", "pontuação", "pontos", "idade em meses", "ig em semanas", "status das boas práticas"];
-      const cols = headers.filter(h => !excluded.includes(h.toLowerCase()) && !h.startsWith("Nº") && h.length > 2);
-     
+      const excluded = ["nº", "n", "equipe", "equpe", "microárea", "nome completo", "data de nascimento", "cpf/cns", "idade", "quadrimestre", "pontuação", "pontos", "idade em meses", "ig em semanas", "status das boas práticas", "status das vacinas"];
+      const cols = headers.filter(h => !excluded.includes(h.toLowerCase()) && !h.toLowerCase().startsWith("nº") && h.length > 2);
+
       const types = ["success", "warning", "info", "primary", "danger"];
-     
       const cards = [];
 
-      // 1. Adicionar os cartões existentes
       cols.forEach((col, idx) => {
         let count = 0;
         let total = data.length;
         const colLower = col.toLowerCase();
-       
+
         if (currentTab.id === "tab6") {
           if (colLower.includes("exame de colo") || colLower.includes("colo de útero") || colLower.includes("colo de utero")) {
-            const filtered = data.filter(r => {
-              const age = getAge(r);
-              return age >= 25 && age <= 64;
-            });
+            const filtered = data.filter(r => getAge(r) >= 25 && getAge(r) <= 64);
             total = filtered.length;
             filtered.forEach(r => {
               const val = String(r[col] || "").trim();
               if (val && val !== "" && val !== "0" && val.toUpperCase() !== "NÃO") count++;
             });
           } else if (colLower.includes("mamografia")) {
-            const filtered = data.filter(r => {
-              const age = getAge(r);
-              return age >= 50 && age <= 69;
-            });
+            const filtered = data.filter(r => getAge(r) >= 50 && getAge(r) <= 69);
             total = filtered.length;
             filtered.forEach(r => {
               const val = String(r[col] || "").trim();
               if (val && val !== "" && val !== "0" && val.toUpperCase() !== "NÃO") count++;
             });
           } else if (colLower.includes("saúde reprodutiva") || colLower.includes("saude reprodutiva") || colLower.includes("consulta em saúde reprodutiva")) {
-            const filtered = data.filter(r => {
-              const age = getAge(r);
-              return age >= 14 && age <= 69;
-            });
+            const filtered = data.filter(r => getAge(r) >= 14 && getAge(r) <= 69);
             total = filtered.length;
             filtered.forEach(r => {
               const val = String(r[col] || "").trim();
@@ -474,53 +487,54 @@
             });
           } else {
             data.forEach(r => {
-              const val = (r[col] || "").trim().toUpperCase();
-              if (val === "SIM" || val === "REALIZADAS" || val === "PROVÁVEL" || (val && !["", "0", "NÃO", "N.A.", "FALTANDO", "PRIORIDADE", "ATRASADAS", "NÃO PROVÁVEL"].includes(val))) count++;
+              const valUpper = (r[col] || "").trim().toUpperCase();
+              if (valUpper === "SIM" || valUpper === "REALIZADAS" || valUpper === "PROVÁVEL" || (valUpper && !["", "0", "NÃO", "N.A.", "FALTANDO", "PRIORIDADE", "ATRASADAS", "NÃO PROVÁVEL"].includes(valUpper))) count++;
             });
           }
         } else {
           data.forEach(r => {
-            const val = (r[col] || "").trim().toUpperCase();
-            if (colLower.includes("dtpa")) {
-              if (val && /\d{2}\/\d{2}\/\d{4}/.test(val)) count++;
+            const val = (r[col] || "").trim();
+            const valUpper = val.toUpperCase();
+
+            if (colLower.includes("vacina") || colLower.includes("dtpa") || currentTab.id === "tab2") {
+              if (valUpper.includes("REALIZADAS") || valUpper === "REALIZADAS" || /\d{2}\/\d{2}\/\d{4}/.test(val)) {
+                count++;
+              }
             } else if (currentTab.id === "tab1" || currentTab.id === "tab3") {
-              if (val === "SIM") count++;
+              if (valUpper === "SIM") count++;
             } else {
-              if (val === "SIM" || val === "REALIZADAS" || val === "PROVÁVEL" || (val && !["", "0", "NÃO", "N.A.", "FALTANDO", "PRIORIDADE", "ATRASADAS", "NÃO PROVÁVEL"].includes(val))) count++;
+              if (valUpper === "SIM" || valUpper === "REALIZADAS" || valUpper === "PROVÁVEL" || (valUpper && !["", "0", "NÃO", "N.A.", "FALTANDO", "PRIORIDADE", "ATRASADAS", "NÃO PROVÁVEL"].includes(valUpper))) count++;
             }
           });
         }
-       
+
         const pct = total > 0 ? Math.round((count / total) * 100) : 0;
         const type = types[idx % types.length];
-       
+
         cards.push(`<div class="card ${type}">
           <div class="card-title">${col.length > 35 ? col.substring(0, 35) + "..." : col}</div>
           <div><span class="card-value">${count}</span> <span class="card-total">/ ${total}</span></div>
           <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
         </div>`);
       });
-     
-      // 2. Adicionar o cartão PONTUAÇÃO (apenas para a tab1), no final
+
       if (currentTab.id === "tab1") {
         const cardNames = ["1ª CONSULTA <=30 DIAS", "VISITAS ACS (2)", "CONSULTAS (9)", "PESO & ALTURA (9)", "VACINAS"];
         let sumOfResults = 0;
         let totalRecords = data.length;
-
         cardNames.forEach(name => {
           const col = headers.find(h => h.toUpperCase() === name.toUpperCase());
           if (col) {
             let count = 0;
             data.forEach(r => {
-              const val = (r[col] || "").trim().toUpperCase();
-              if (val === "SIM" || val === "REALIZADAS" || val === "PROVÁVEL" || (val && !["", "0", "NÃO", "N.A.", "FALTANDO", "PRIORIDADE", "ATRASADAS", "NÃO PROVÁVEL"].includes(val))) {
+              const valUpper = (r[col] || "").trim().toUpperCase();
+              if (valUpper === "SIM" || valUpper === "REALIZADAS" || valUpper === "PROVÁVEL" || (valUpper && !["", "0", "NÃO", "N.A.", "FALTANDO", "PRIORIDADE", "ATRASADAS", "NÃO PROVÁVEL"].includes(valUpper))) {
                 count++;
               }
             });
             sumOfResults += count;
           }
         });
-
         const pontuacao = totalRecords > 0 ? (sumOfResults * 20) / totalRecords : 0;
         const pontuacaoCard = `<div class="card primary">
           <div class="card-title">PONTUAÇÃO</div>
@@ -563,25 +577,25 @@
 
     function renderTable(data) {
       currentFilteredData = data;
-      const displayHeaders = headers.filter(h => !["QUADRIMESTRE", "PONTUAÇÃO", "PONTOS"].includes(h.toUpperCase()));
-     
+      const displayHeaders = headers.filter(h => !["QUADRIMESTRE", "PONTUAÇÃO", "PONTOS", "N"].includes(h.toUpperCase()));
+
       const sortIcon = (h) => {
         if (h.toLowerCase().startsWith("nº") || h.toLowerCase() === "n°") return "";
         if (sortColumn === h) return sortDirection === "asc" ? " ▲" : " ▼";
         return " ⇅";
       };
-     
+
       document.getElementById("table-head").innerHTML = displayHeaders.map((h, i) => {
         const isFirst = i === 0 && (h.toLowerCase().startsWith("nº") || h.toLowerCase() === "n°");
         return `<th onclick="handleSort('${h}')">${isFirst ? "Nº" : h}${sortIcon(h)}</th>`;
       }).join("");
-     
+
       const sorted = sortData(data);
       const totalPages = Math.ceil(sorted.length / ITEMS_PER_PAGE);
       const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
       const endIdx = startIdx + ITEMS_PER_PAGE;
       const pageData = sorted.slice(startIdx, endIdx);
-     
+
       document.getElementById("table-body").innerHTML = pageData.map((r, idx) => {
         return "<tr>" + displayHeaders.map((h, i) => {
           const isFirst = i === 0 && (h.toLowerCase().startsWith("nº") || h.toLowerCase() === "n°");
@@ -594,9 +608,9 @@
           return `<td>${cls ? `<span class="${cls}">${val}</span>` : val}</td>`;
         }).join("") + "</tr>";
       }).join("");
-     
+
       document.getElementById("table-info").textContent = `Mostrando ${startIdx + 1}-${Math.min(endIdx, sorted.length)} de ${sorted.length} registros`;
-     
+
       document.getElementById("pagination").innerHTML = `
         <button onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>Anterior</button>
         <span>Página ${currentPage} de ${totalPages || 1}</span>
@@ -611,7 +625,6 @@
       renderTable(currentFilteredData);
     }
 
-    // === GERAÇÃO DE PDF REAL ===
     function generatePDF() {
       const f = getFilters();
       const filtered = allData.filter(r => {
@@ -619,43 +632,36 @@
         if (f.equipe && equipe !== f.equipe) return false;
         if (f.microarea && r["Microárea"] !== f.microarea) return false;
         if (f.boasPraticas && r["STATUS DAS BOAS PRÁTICAS"] !== f.boasPraticas) return false;
-        if (f.vacinas && r["STATUS DAS VACINAS"] !== f.vacinas) return false;
+        if (currentTab.id !== "tab1" && f.vacinas && r["STATUS DAS VACINAS"] !== f.vacinas) return false;
         if (f.prioridade && r["PRIORIDADE"] !== f.prioridade) return false;
+        if (currentTab.id === "tab1" && f.quadrimestre && getQuadrimestre(r) !== f.quadrimestre) return false;
         return true;
       });
-
       const sorted = sortData(filtered);
-      const displayHeaders = headers.filter(h => !["QUADRIMESTRE", "PONTUAÇÃO", "PONTOS"].includes(h.toUpperCase()));
-
+      const displayHeaders = headers.filter(h => !["QUADRIMESTRE", "PONTUAÇÃO", "PONTOS", "N"].includes(h.toUpperCase()));
       const tableData = sorted.map((r, idx) => {
         return displayHeaders.map((h, i) => {
           const isFirst = i === 0 && (h.toLowerCase().startsWith("nº") || h.toLowerCase() === "n°");
           return isFirst ? (idx + 1) : (r[h] || "");
         });
       });
-
       const doc = new jsPDF('l', 'mm', 'a4');
       const pageWidth = doc.internal.pageSize.getWidth();
       const margin = 10;
-
       doc.setFontSize(18);
       doc.text("Indicadores de Saúde de Varjota", pageWidth / 2, margin + 10, { align: "center" });
-
       doc.setFontSize(14);
       doc.text(currentTab.label, pageWidth / 2, margin + 18, { align: "center" });
-
       doc.setFontSize(10);
       doc.text(`Gerado em: ${new Date().toLocaleDateString("pt-BR")} ${new Date().toLocaleTimeString("pt-BR")}`, pageWidth / 2, margin + 25, { align: "center" });
-
       let y = margin + 35;
-
       const activeFilters = [];
       if (f.equipe) activeFilters.push(`Equipe: ${f.equipe}`);
       if (f.microarea) activeFilters.push(`Microárea: ${f.microarea}`);
       if (f.boasPraticas) activeFilters.push(`Boas Práticas: ${f.boasPraticas}`);
-      if (f.vacinas) activeFilters.push(`Vacinas: ${f.vacinas}`);
+      if (currentTab.id !== "tab1" && f.vacinas) activeFilters.push(`Vacinas: ${f.vacinas}`);
+      if (currentTab.id === "tab1" && f.quadrimestre) activeFilters.push(`Quadrimestre: ${f.quadrimestre}`);
       if (f.prioridade) activeFilters.push(`Prioridade: ${f.prioridade}`);
-
       if (activeFilters.length > 0) {
         doc.setFontSize(12);
         doc.text("Filtros aplicados:", margin, y);
@@ -667,10 +673,8 @@
         });
         y += 10;
       }
-
       doc.text(`Total de registros: ${sorted.length}`, margin, y);
       y += 10;
-
       doc.autoTable({
         head: [displayHeaders.map(h => h === displayHeaders[0] && (h.toLowerCase().startsWith("nº") || h.toLowerCase() === "n°") ? "Nº" : h)],
         body: tableData,
@@ -686,16 +690,13 @@
           doc.text(`Página ${doc.internal.getCurrentPageInfo().pageNumber}`, pageWidth - margin - 30, doc.internal.pageSize.getHeight() - 10);
         }
       });
-
       const fileName = `Indicadores_Varjota_${currentTab.label.replace(/[^a-z0-9]/gi, '_')}_${new Date().toISOString().slice(0,10)}.pdf`;
       doc.save(fileName);
     }
 
-    // Eventos
-    document.querySelectorAll("select").forEach(el => el.addEventListener("change", applyFilters));
-
     // Inicialização
     renderTabs();
+    renderFilters();
     loadData();
   </script>
 </body>
