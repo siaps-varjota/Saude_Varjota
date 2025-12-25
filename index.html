@@ -535,7 +535,7 @@
             sumOfResults += count;
           }
         });
-        const pontuacao = totalRecords > 0 ? (sumOfResults * 20) / total : 0;
+        const pontuacao = totalRecords > 0 ? (sumOfResults * 20) / totalRegistros : 0;
         const pontuacaoCard = `<div class="card primary">
           <div class="card-title">PONTUAÇÃO</div>
           <div><span class="card-value">${pontuacao.toFixed(2)}</span> <span class="card-total">/ ${totalRecords}</span></div>
