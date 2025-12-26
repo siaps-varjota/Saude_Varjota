@@ -452,7 +452,7 @@
     }
 
     function renderCards(data) {
-      const excluded = ["nº", "n", "equipe", "equpe", "microárea", "nome completo", "data de nascimento", "cpf/cns", "idade", "quadrimestre", "pontuação", "pontos", "idade em meses", "ig em semanas", "status das boas práticas", "status das vacinas"];
+      const excluded = ["nº", "n", "equipe", "equpe", "microárea", "nome completo", "data de nascimento", "cpf/cns", "idade", "quadrimestre", "pontuação", "pontos", "idade em meses", "ig em semanas", "status das boas práticas", "status das vacinas", "boas práticas"];
       const cols = headers.filter(h => !excluded.includes(h.toLowerCase()) && !h.toLowerCase().startsWith("nº") && h.length > 2);
 
       const types = ["success", "warning", "info", "primary", "danger"];
